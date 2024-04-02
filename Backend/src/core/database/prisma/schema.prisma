@@ -1,0 +1,21 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// How to make a migration on prisma: yarn prisma migrate dev --name ${name} 
+// How to run all migrations: yarn prisma migrate
+// Generate the new schema: yarn prisma generate
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // other options are "mysql" and "sqlite"
+  url      = env("DATABASE_URL") // the connection string to your database
+}
+
+model SubArray {
+  number Int    @id @unique @map("number_subarray")
+  id     String @map("id_subarray")
+
+  @@map("subarray")
+}
