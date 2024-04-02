@@ -5,6 +5,7 @@ import { NestFactory } from '@nestjs/core';
 import fmp from '@fastify/multipart';
 import configurations from './core/config/configurations';
 import { AppModule } from './app.module';
+// import helmet from 'helmet';
 
 async function bootstrap() {
 
@@ -24,6 +25,12 @@ async function bootstrap() {
   });
 
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, fastifyAdapter);
+
+  // app.use(
+  //   helmet({
+  //     contentSecurityPolicy: false,
+  //   })
+  // );
 
   const config = new DocumentBuilder()
     .setTitle('API de ejemplo')

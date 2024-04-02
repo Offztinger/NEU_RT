@@ -5,11 +5,11 @@ import { configRoot } from './core/config/configurations';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './core/database/database.module';
-
+import { CSVModule } from './csv/csv.module';
 
 @Module({
   //Los modulos se importan después de "DatabaseModule"
-  imports: [ConfigModule.forRoot(configRoot()), DatabaseModule],
+  imports: [ConfigModule.forRoot(configRoot()), DatabaseModule, CSVModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })

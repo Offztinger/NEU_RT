@@ -14,7 +14,6 @@ export interface IConfig {
   postgresUser: string;
   postgresPassword: string;
   postgresDatabase: string;
-
 }
 
 const configurations = registerAs(
