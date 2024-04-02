@@ -17,7 +17,14 @@ export class CSVService {
     }
 
     async findAllCSVData() {
-        return this.prisma.subArray.findMany();
+        const AllCSVData = await this.prisma.subArray.findMany();
+
+        if (AllCSVData.length === 0) {
+            throw new NotFoundException("No hay información en el momento");
+        }
+
+        return AllCSVData;
+
     }
 
     async findCSVDataById(id: string) {
@@ -25,11 +32,12 @@ export class CSVService {
             where: { id }
         });
 
-        if (!subArrayById) {
+        if (subArrayById.length === 0) {
             throw new NotFoundException("No hay ningun subarray con ese id");
         }
 
         return subArrayById;
+
     }
 
 
