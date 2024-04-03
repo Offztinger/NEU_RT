@@ -21,5 +21,5 @@ bash: yarn prisma migrate dev
 `
 
 Para ejecutar el backend: `
-bash: yarn start:dev
+bash: yarn run start:dev
 `
