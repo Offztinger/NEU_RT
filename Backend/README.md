@@ -1,26 +1,25 @@
 ## Proyecto base
 
-instalar paquetes con yarn
-`bash
-yarn
+Instalar paquetes con yarn: `
+bash:yarn
 `
 
 ## Para ejecutar el proyecto
 
-`bash:
-docker compose -f "compose.yml" up -d --build
+Levanta el contenedor: `
+bash: docker compose -f "compose.yml" up -d --build
 `
 
 WLS debe estar activado en Windows para la persistencia.
 
-`bash:
-yarn start:dev
+Para generar el esquema: `
+bash: yarn prisma generate
 `
 
-`bash:
-yarn prisma generate
-`
-
-Por ultimo ejecutar `
+Para la migración: `
 bash: yarn prisma migrate dev
+`
+
+Para ejecutar el backend: `
+bash: yarn start:dev
 `
