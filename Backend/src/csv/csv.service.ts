@@ -1,13 +1,20 @@
-import * as fs from 'fs';
-import { parse } from 'csv-parse';
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "src/core/database/prisma/prisma.service";
 import { CsvDTO } from "src/dto/CsvDTO";
-
+import * as fs from 'fs';
+import path = require('path');
 
 @Injectable()
 export class CSVService {
     constructor(private prisma: PrismaService) { }
+    // Variables para la función getSubVectors
+    target: number = 52;
+
+    data: number[] = fs
+        .readFileSync(path.join('./src/csv/', 'data_vector.csv'), 'utf8')
+        .split('\n')
+        .map(Number)
+        .filter((item) => item !== 0);
 
     async createCSVData(data: CsvDTO) {
         return this.prisma.subArray.create({
@@ -20,35 +27,78 @@ export class CSVService {
 
     // Función para encontrar un número más óptimo que permita alcanzar la suma deseada
 
+    getSubVectors = async (data: any, target: any) => {
+        const subVectors: any[] = [];
 
-    // const filePath = './src/csv/data_vector.csv';
-    async processCSVData(filePath: string): Promise<string[]> {
-        return new Promise<string[]>((resolve, reject) => {
-            const dataArray: string[] = [];
-            fs.createReadStream(filePath)
-                .pipe(parse({ delimiter: ',' }))
-                .on('data', (row: any[]) => {
-                    // Agregar cada valor del CSV al array
-                    dataArray.push(row[0]);
-                })
-                .on('end', () => {
-                    console.log('CSV file successfully processed', dataArray);
-                    resolve(dataArray);
-                })
-                .on('error', (error: Error) => {
-                    console.error('Error al leer el archivo CSV:', error);
-                    reject(error);
-                });
-        });
-    }
+        let subVector: any[] = [];
+
+        let currentTarget = target;
+
+        let i = 0;
+
+        for (i; i < data.length; i++) {
+            const value = data[i];
+
+            if (subVector.includes(value)) {
+                continue;
+            }
+
+            const currentResult = currentTarget - value;
+
+            if (currentResult === 0) {
+                subVector.push(value);
+
+                subVectors.push(subVector);
+
+                for (let i = 0; i < subVector.length; i++) {
+                    const subArray = subVector[i];
+                    await this.createCSVData({ number: subArray, id: subVectors.length.toString() });
+                }
+
+                currentTarget = target;
+
+                data = data.filter((item: any) => !subVector.includes(item));
+
+                subVector = [];
+
+                i = -1;
+
+                continue;
+            }
+
+            if (currentResult > 0) {
+                subVector.push(value);
+
+                currentTarget = currentResult;
+
+                continue;
+            }
+
+            if (currentResult < 0) {
+                const newData = data.filter((item: any) => !subVector.includes(item));
+
+                if (!newData.some((item: any) => item <= currentTarget)) {
+                    data.splice(0, 1);
+
+                    currentTarget = target;
+
+                    subVector = [];
+
+                    i = -1;
+                }
+            }
+        }
+
+        return subVectors;
+    };
 
     async findAllCSVData() {
         const AllCSVData = await this.prisma.subArray.findMany();
 
         if (AllCSVData.length === 0) {
             try {
-                const dataArray = await this.processCSVData('./src/csv/data_vector.csv');
-                return dataArray;
+                const subVectors = this.getSubVectors(this.data, this.target);
+                console.log("subVectors: ", await subVectors);
             } catch (error) {
                 throw new NotFoundException("Error al procesar el archivo CSV");
             }

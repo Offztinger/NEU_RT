@@ -28,11 +28,20 @@ function App() {
 	};
 
 	const fetchApiById = async id => {
-		const response = await fetch(`http://localhost:4000/csv/${id}`, {
+		await fetch(`http://localhost:4000/csv/${id}`, {
 			method: 'GET',
-		}).catch(err => console.error(err));
-		const responseJSON = await response.json();
-		setSubArray(responseJSON);
+		})
+			.then(async r => {
+				const data = await r.json();
+				if (data.length === undefined) {
+					alert('No se encontraron resultados');
+				} else {
+					setSubArray(data);
+				}
+			})
+			.catch(err => {
+				console.error(err);
+			});
 	};
 
 	useEffect(() => {
@@ -63,7 +72,11 @@ function App() {
 							type='submit'
 							style={{ marginLeft: '10px' }}
 							onClick={() => {
-								fetchApiById(idToSearch);
+								if (idToSearch === '') {
+									fetchApi();
+								} else {
+									fetchApiById(idToSearch);
+								}
 							}}
 							className='btn btn-primary mt-3'
 						>
@@ -80,12 +93,15 @@ function App() {
 							</tr>
 						</thead>
 						<tbody>
-							{subArray.map((item, index) => (
-								<tr key={index}>
-									<th scope='row'>{item.id}</th>
-									<td>{item.number}</td>
-								</tr>
-							))}
+							{subArray &&
+								subArray.map((item, index) => {
+									return (
+										<tr key={index}>
+											<td>{item.id}</td>
+											<td>{item.number}</td>
+										</tr>
+									);
+								})}
 						</tbody>
 					</table>
 				</div>
