@@ -2,18 +2,18 @@
 import { useEffect, useState } from 'react';
 import './styles.scss';
 
+// {
+// 	subArray: 1,
+// 	number: 10,
+// },
+// {
+// 	subArray: 1,
+// 	number: 11,
+// },
+
 function App() {
 	const [idToSearch, setIdToSearch] = useState('');
-	const [subArray, setSubArray] = useState([
-		{
-			subArray: 1,
-			number: 10,
-		},
-		{
-			subArray: 1,
-			number: 11,
-		},
-	]);
+	const [subArray, setSubArray] = useState([]);
 
 	const onInputChange = e => {
 		setIdToSearch(e.target.value);
@@ -36,7 +36,7 @@ function App() {
 	};
 
 	useEffect(() => {
-		// fetchApi();
+		fetchApi();
 	}, []);
 
 	return (
@@ -45,7 +45,7 @@ function App() {
 				<div className='d-flex w-100'>
 					<div className='mb-3 mr-3 w-75'>
 						<label for='idSubArray' className='form-label'>
-							Id de subarreglo
+							Id de subarreglo {idToSearch}
 						</label>
 						<input
 							className='form-control'
@@ -64,7 +64,6 @@ function App() {
 							style={{ marginLeft: '10px' }}
 							onClick={() => {
 								fetchApiById(idToSearch);
-								setIdToSearch('');
 							}}
 							className='btn btn-primary mt-3'
 						>
@@ -83,7 +82,7 @@ function App() {
 						<tbody>
 							{subArray.map((item, index) => (
 								<tr key={index}>
-									<th scope='row'>{item.subArray}</th>
+									<th scope='row'>{item.id}</th>
 									<td>{item.number}</td>
 								</tr>
 							))}

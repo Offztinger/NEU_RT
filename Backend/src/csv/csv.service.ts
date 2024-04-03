@@ -9,14 +9,11 @@ import { CsvDTO } from "src/dto/CsvDTO";
 export class CSVService {
     constructor(private prisma: PrismaService) { }
 
-    maxIterations: number = 100; // Límite máximo de iteraciones
-    currentIterations: number = 0; // Número de iteraciones actual
-
     async createCSVData(data: CsvDTO) {
         return this.prisma.subArray.create({
             data: {
-                number: data.number_subarray,
-                id: data.id_subarray
+                number: data.number,
+                id: data.id
             },
         });
     }
